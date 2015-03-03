@@ -117,6 +117,8 @@ class _OperationCancellableIterator(interfaces.CancellableIterator):
         raise future.CancelledError()
     return next(self._rendezvous)
 
+  __next__ = next
+
   def cancel(self):
     with self._lock:
       self._cancelled = True

@@ -65,7 +65,7 @@ def _write(call, rpc_state, payload):
 
 
 def _status(call, rpc_state):
-  call.status(_low.Status(_low.Code.OK, ''), call)
+  call.status(_low.Status(_low.Code.OK, bytes()), call)
   rpc_state.write.low = _LowWrite.CLOSED
 
 
@@ -120,7 +120,7 @@ class ForeLink(ticket_interfaces.ForeLink, activated.Activated):
     # TODO(nathaniel): Metadata support.
     call.premetadata()
     call.read(call)
-    method = service_acceptance.method
+    method = service_acceptance.method.decode()
 
     self._rpc_states[call] = _common.CommonRPCState(
         _common.WriteState(_LowWrite.OPEN, _common.HighWrite.OPEN, []), 1,

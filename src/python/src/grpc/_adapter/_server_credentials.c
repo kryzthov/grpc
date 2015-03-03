@@ -92,11 +92,15 @@ static int pygrpc_server_credentials_init(ServerCredentials *self,
   }
 }
 
+#ifndef Py_TYPE
+    #define Py_TYPE(ob) (((PyObject*)(ob))->ob_type)
+#endif
+
 static void pygrpc_server_credentials_dealloc(ServerCredentials *self) {
   if (self->c_server_credentials != NULL) {
     grpc_server_credentials_release(self->c_server_credentials);
   }
-  self->ob_type->tp_free((PyObject *)self);
+  Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
 PyTypeObject pygrpc_ServerCredentialsType = {

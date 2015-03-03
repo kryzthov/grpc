@@ -29,6 +29,8 @@
 
 """Entry points into the Face layer of RPC Framework."""
 
+import six
+
 from grpc.framework.base import exceptions as _base_exceptions
 from grpc.framework.base import interfaces as base_interfaces
 from grpc.framework.face import _calls
@@ -171,12 +173,12 @@ def _aggregate_methods(
 
   def adapt_unpooled_methods(adapted_methods, unadapted_methods, adaptation):
     if unadapted_methods is not None:
-      for name, unadapted_method in unadapted_methods.iteritems():
+      for name, unadapted_method in six.iteritems(unadapted_methods):
         adapted_methods[name] = adaptation(unadapted_method)
 
   def adapt_pooled_methods(adapted_methods, unadapted_methods, adaptation):
     if unadapted_methods is not None:
-      for name, unadapted_method in unadapted_methods.iteritems():
+      for name, unadapted_method in six.iteritems(unadapted_methods):
         adapted_methods[name] = adaptation(unadapted_method, pool)
 
   adapt_unpooled_methods(

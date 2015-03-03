@@ -37,6 +37,10 @@
 #include <grpc/grpc_security.h>
 #include <grpc/support/alloc.h>
 
+#ifndef Py_TYPE
+    #define Py_TYPE(ob) (((PyObject*)(ob))->ob_type)
+#endif
+
 static int pygrpc_client_credentials_init(ClientCredentials *self,
                                           PyObject *args, PyObject *kwds) {
   char *root_certificates;
@@ -65,7 +69,7 @@ static void pygrpc_client_credentials_dealloc(ClientCredentials *self) {
   if (self->c_client_credentials != NULL) {
     grpc_credentials_release(self->c_client_credentials);
   }
-  self->ob_type->tp_free((PyObject *)self);
+  Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
 PyTypeObject pygrpc_ClientCredentialsType = {

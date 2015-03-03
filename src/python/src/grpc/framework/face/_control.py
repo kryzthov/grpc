@@ -135,6 +135,8 @@ class Rendezvous(stream.Consumer):
       else:
         raise AssertionError('Unreachable code reached!')
 
+  __next__ = next
+
   def set_outcome(self, outcome):
     with self._condition:
       if outcome is not base_interfaces.Outcome.COMPLETED:

@@ -59,11 +59,15 @@ static int pygrpc_channel_init(Channel *self, PyObject *args, PyObject *kwds) {
   }
 }
 
+#ifndef Py_TYPE
+    #define Py_TYPE(ob) (((PyObject*)(ob))->ob_type)
+#endif
+
 static void pygrpc_channel_dealloc(Channel *self) {
   if (self->c_channel != NULL) {
     grpc_channel_destroy(self->c_channel);
   }
-  self->ob_type->tp_free((PyObject *)self);
+  Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
 PyTypeObject pygrpc_ChannelType = {

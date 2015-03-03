@@ -64,11 +64,15 @@ static int pygrpc_call_init(Call *self, PyObject *args, PyObject *kwds) {
   return 0;
 }
 
+#ifndef Py_TYPE
+    #define Py_TYPE(ob) (((PyObject*)(ob))->ob_type)
+#endif
+
 static void pygrpc_call_dealloc(Call *self) {
   if (self->c_call != NULL) {
     grpc_call_destroy(self->c_call);
   }
-  self->ob_type->tp_free((PyObject *)self);
+  Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
 static const PyObject *pygrpc_call_invoke(Call *self, PyObject *args) {
@@ -202,7 +206,7 @@ static const PyObject *pygrpc_call_status(Call *self, PyObject *args) {
     Py_DECREF(code);
     return NULL;
   }
-  c_code = PyInt_AsLong(code);
+  c_code = PyLong_AsLong(code);
   Py_DECREF(code);
   if (c_code == -1 && PyErr_Occurred()) {
     Py_DECREF(details);

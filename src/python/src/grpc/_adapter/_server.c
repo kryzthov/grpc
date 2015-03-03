@@ -40,6 +40,10 @@
 #include "grpc/_adapter/_error.h"
 #include "grpc/_adapter/_server_credentials.h"
 
+#ifndef Py_TYPE
+    #define Py_TYPE(ob) (((PyObject*)(ob))->ob_type)
+#endif
+
 static int pygrpc_server_init(Server *self, PyObject *args, PyObject *kwds) {
   const PyObject *completion_queue;
   PyObject *server_credentials;
@@ -72,7 +76,7 @@ static void pygrpc_server_dealloc(Server *self) {
   if (self->c_server != NULL) {
     grpc_server_destroy(self->c_server);
   }
-  self->ob_type->tp_free((PyObject *)self);
+  Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
 static PyObject *pygrpc_server_add_http2_addr(Server *self, PyObject *args) {
@@ -88,7 +92,7 @@ static PyObject *pygrpc_server_add_http2_addr(Server *self, PyObject *args) {
     return NULL;
   }
 
-  return PyInt_FromLong(port);
+  return PyLong_FromLong(port);
 }
 
 static PyObject *pygrpc_server_add_secure_http2_addr(Server *self,
@@ -103,7 +107,7 @@ static PyObject *pygrpc_server_add_secure_http2_addr(Server *self,
     PyErr_SetString(PyExc_RuntimeError, "Couldn't add port to server!");
     return NULL;
   }
-  return PyInt_FromLong(port);
+  return PyLong_FromLong(port);
 }
 
 static PyObject *pygrpc_server_start(Server *self) {

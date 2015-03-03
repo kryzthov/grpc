@@ -29,6 +29,7 @@
 
 """Implementations for assembling RPC framework values."""
 
+import six
 import threading
 
 # tickets_interfaces, face_interfaces, and activated are referenced from
@@ -89,7 +90,7 @@ class _FaceStub(object):
 def _behaviors(implementations, front, pool):
   behaviors = {}
   stub = face_implementations.stub(front, pool)
-  for name, implementation in implementations.iteritems():
+  for name, implementation in six.iteritems(implementations):
     if implementation.cardinality is cardinality.Cardinality.UNARY_UNARY:
       behaviors[name] = stub.unary_unary_sync_async(name)
     elif implementation.cardinality is cardinality.Cardinality.UNARY_STREAM:
@@ -140,7 +141,7 @@ class _DynamicInlineStub(object):
     with self._lock:
       behavior = self._behaviors.get(attr)
       if behavior is None:
-        for name, behavior in self._behaviors.iteritems():
+        for name, behavior in six.iteritems(self._behaviors):
           last_slash_index = name.rfind('/')
           if 0 <= last_slash_index and name[last_slash_index + 1:] == attr:
             return behavior
@@ -161,7 +162,7 @@ def _servicer(implementations, pool):
   event_stream_in_value_out_methods = {}
   event_stream_in_stream_out_methods = {}
 
-  for name, implementation in implementations.iteritems():
+  for name, implementation in six.iteritems(implementations):
     if implementation.cardinality is cardinality.Cardinality.UNARY_UNARY:
       if implementation.style is style.Service.INLINE:
         inline_value_in_value_out_methods[name] = (

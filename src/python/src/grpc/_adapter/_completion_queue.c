@@ -269,9 +269,13 @@ static int pygrpc_completion_queue_init(CompletionQueue *self, PyObject *args,
   return 0;
 }
 
+#ifndef Py_TYPE
+    #define Py_TYPE(ob) (((PyObject*)(ob))->ob_type)
+#endif
+
 static void pygrpc_completion_queue_dealloc(CompletionQueue *self) {
   grpc_completion_queue_destroy(self->c_completion_queue);
-  self->ob_type->tp_free((PyObject *)self);
+  Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
 static PyObject *pygrpc_completion_queue_get(CompletionQueue *self,
